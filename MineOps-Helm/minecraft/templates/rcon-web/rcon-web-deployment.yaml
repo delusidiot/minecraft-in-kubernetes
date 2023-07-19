@@ -1,0 +1,35 @@
+{{- if and .Values.minecraftServer.rcon.enabled .Values.minecraftServer.rcon.web.enabled}}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "minecraft.fullname" . }}-rcon-web
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: rcon-web
+  template:
+    metadata:
+      labels:
+        app: rcon-web
+    spec:
+      containers:
+      - name: rcon-web-admin
+        image: {{ .Values.minecraftServer.rcon.web.image }}
+        env:
+        - name: RWA_USERNAME
+          value: {{ .Values.minecraftServer.rcon.web.username }}
+        - name: RWA_PASSWORD
+          value: {{ .Values.minecraftServer.rcon.web.password }}
+        - name: RWA_RCON_PASSWORD
+          value: {{ .Values.minecraftServer.rcon.password }}
+        - name: RWA_RCON_HOST
+          value: "{{ template "minecraft.fullname" . }}-rcon"
+        ports:
+        - name: rcon-web-ui
+          containerPort: {{ .Values.minecraftServer.rcon.web.port }}
+          protocol: TCP
+        - name: rcon-websocket
+          containerPort: {{ .Values.minecraftServer.rcon.web.websocket }}
+          protocol: TCP
+{{ end }}

@@ -1,0 +1,22 @@
+{{- if and .Values.minecraftServer.rcon.enabled .Values.minecraftServer.rcon.web.enabled}}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "minecraft.fullname" . }}-rcon-web-svc
+  labels:
+    app: rcon-web
+    service.beta.kubernetes.io/aws-load-balancer-type: "nlb"
+spec:
+  type: LoadBalancer
+  ports:
+  - name: rcon-web
+    port: {{ .Values.minecraftServer.rcon.web.port }}
+    targetPort: {{ .Values.minecraftServer.rcon.web.port }}
+    protocol: TCP
+  - name: rcon-websocket
+    port: {{ .Values.minecraftServer.rcon.web.websocket }}
+    targetPort: {{ .Values.minecraftServer.rcon.web.websocket }}
+    protocol: TCP
+  selector:
+    app: rcon-web
+{{ end }}

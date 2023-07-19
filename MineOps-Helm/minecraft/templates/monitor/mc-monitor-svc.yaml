@@ -1,0 +1,11 @@
+{{- if .Values.minecraftServer.monitor.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: mc-monitor
+spec:
+  selector:
+    app: mc-monitor
+  ports:
+    - port: {{ .Values.minecraftServer.monitor.port }}
+{{ end }}

@@ -1,0 +1,30 @@
+{{- if .Values.minecraftServer.monitor.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mc-monitor
+  labels:
+    app: mc-monitor
+spec:
+  replicas: 1
+  template:
+    metadata:
+      name: mc-monitor
+      labels:
+        app: mc-monitor
+    spec:
+      containers:
+        - name: main
+          image: {{ .Values.minecraftServer.monitor.image }}
+          env:
+            - name: DEBUG
+              value: "true"
+            - name: EXPORT_SERVERS
+              value: "{{ template "minecraft.fullname" . }}"
+          args:
+            - export-for-prometheus
+      restartPolicy: Always
+  selector:
+    matchLabels:
+      app: mc-monitor
+{{ end }}
